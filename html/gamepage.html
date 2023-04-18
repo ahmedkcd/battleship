@@ -4,10 +4,124 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Battleship</title>
+  <style>
+    .board {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+    .cell{
+      width: 40px;
+      height: 40px;
+      border: 1px solid black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <h1>HOORAY Welcome to Battleship Page</h1>
-  <h3>My thought are this is the page that were gonna inegrate the app.js</h3>
+  <h1>Battleship game</h1>
+  <div class="board" id="player-board"></div>
+  <div class="board" id="ai-board"></div>
+<script>
+    const playerBoard = document.getElementById('player-board');
+    const aiBoard = document.getElementById('ai-board');
+
+    const boardSize = 5;
+    const ships = [
+    
+      {name: 'Carrier', size: 5 },
+      {name: 'Battleship', size: 4 },
+      {name: 'Cruiser', size: 3 },
+      {name: 'Submarine', size: 3},
+      {name: 'Destroyer', size: 2}
+    
+    ];
+
+    let playerBoardState = createEmptyBoard(boardSize);
+    let aiBoardState = createEmptyBoard(boardSize);
+
+    for (const ship of ships) {
+      let placed = false;
+      while(!placed) {
+        const direction = Math.random() < 0.5 ? 'horizontal' : 'vertical';
+        const row = Math.floor(Math.random() * boardSize);
+        const col = Math.floor(Math.random() * boardSize);
+        placed = placeShip(playerBoardState, ship, direction, row, col);
+      }
+    }
+
+    renderBoard(playerBoard, playerBoardState, true);
+
+    renderBoard(aiBoard, aiBoardState, false);
+
+    function createEmptyBoard(size) {
+      const board = [];
+      for(let i=0; i < size; i++) {
+        const row = [];
+        for(let j = 0; j< size; j++) {
+          row.push('');
+        }
+        board.push(row);
+      }
+      return board;
+    }
+
+    function placeShip(board, ship, direction, row, col) {
+  const size = ship.size;
+  const placedShip = {name: ship.name, direction, row, col};
+  if (direction === 'horizontal' && col + size <= boardSize) {
+    for (let i = col; i < col + size; i++) {
+      if (board[row][i] !== '') {
+        return false;
+      }
+    }
+    for (let i = col; i < col + size; i++) {
+      board[row][i] = ship.name;
+    }
+    return true;
+  } else if (direction === 'vertical' && row + size <= boardSize) {
+    for (let i = row; i < row + size; i++) {
+      if (board[i][col] !== '') {
+        return false;
+      }
+    }
+    for (let i = row; i < row + size; i++) {
+      board[i][col] = ship.name;
+    }
+    return true;
+  }
+  return false;
+}
+
+
+    
+    function renderBoard(container, boardState, isPlayerBoard ) {
+      for(let row=0; row< boardState.length; row++) {
+        for(let col=0; col <boardState[row].length; col++) {
+          const cell = document.createElement('div');
+          cell.classList.add('cell');
+          if(isPlayerBoard) {
+            cell.dataset.row = row;
+            cell.dataset.col = col;
+            cell.addEventListener('click', () => {
+
+            });
+          }
+          cell.innerText = boardState[row][col];
+          container.appendChild(cell);
+        }
+      }
+    }
+    renderBoard(playerBoard, playerBoardState, true);
+    renderBoard(aiBoard, aiBoardState, false);
+
+
+ </script>
   
 </body>
 </html>
