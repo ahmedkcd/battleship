@@ -38,3 +38,24 @@ app.post('/login', async (req, res) => {
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
 });
+
+app.post('/register', async (req, res) => {
+  const {username, password, email} = req.body;
+
+  try {
+    const client = await MongoClient.connect(uri, { usenewUrlParser: true, useUnifiedTopology: true});
+    const db = client.db('battleshipDB');
+    const users = db.collection('users');
+
+    //insert new user to battleship user collection
+    await users.insertOne({username, password, email});
+
+    client.close();
+
+    res.redirect('/gamepage.html');
+  } catch(error) {
+    console.error('Error connecting to the database', error);
+    res.status(500).send('Internal Server Error');
+  }
+
+});
