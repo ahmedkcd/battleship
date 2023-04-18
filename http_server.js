@@ -48,11 +48,21 @@ app.post('/register', async (req, res) => {
     const users = db.collection('users');
 
     //insert new user to battleship user collection
-    await users.insertOne({username, password, email});
+    const existingUser = await users.insertOne({username, password, email});
 
-    client.close();
+    if (existingUser) {
+      //if username or email already exists, send an error
+      res.status(409).send("Username or email already exists");
+    } else {
+      await users.insertOne({username, password, email});
+      client.close();
+      //if username/email doesnt exist Creates account
+      res.redirect('/gamepage.html');
+    }
 
-    res.redirect('/gamepage.html');
+
+
+   
   } catch(error) {
     console.error('Error connecting to the database', error);
     res.status(500).send('Internal Server Error');
