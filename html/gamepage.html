@@ -9,6 +9,7 @@
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
+      width: 200px;
     }
 
     .cell{
@@ -46,12 +47,19 @@
     let aiBoardState = createEmptyBoard(boardSize);
 
     for (const ship of ships) {
-      let placed = false;
-      while(!placed) {
+      let playerPlaced = false;
+      let aiPlaced = false;
+      while(!playerPlaced) {
         const direction = Math.random() < 0.5 ? 'horizontal' : 'vertical';
         const row = Math.floor(Math.random() * boardSize);
         const col = Math.floor(Math.random() * boardSize);
-        placed = placeShip(playerBoardState, ship, direction, row, col);
+        playerPlaced = placeShip(playerBoardState, ship, direction, row, col);
+      }
+      while(!aiPlaced) {
+        const direction = Math.random() < 0.5 ? 'horizontal' : 'vertical';
+        const row = Math.floor(Math.random() * boardSize);
+        const col = Math.floor(Math.random() * boardSize);
+        aiPlaced = placeShip(aiBoardState, ship, direction, row, col);
       }
     }
 
@@ -73,8 +81,12 @@
 
     function placeShip(board, ship, direction, row, col) {
   const size = ship.size;
-  const placedShip = {name: ship.name, direction, row, col};
-  if (direction === 'horizontal' && col + size <= boardSize) {
+  const placedShip = { name: ship.name, direction, row, col };
+
+  if (direction === 'horizontal') {
+    if (col + size > boardSize) {
+      return false;
+    }
     for (let i = col; i < col + size; i++) {
       if (board[row][i] !== '') {
         return false;
@@ -84,7 +96,10 @@
       board[row][i] = ship.name;
     }
     return true;
-  } else if (direction === 'vertical' && row + size <= boardSize) {
+  } else if (direction === 'vertical') {
+    if (row + size > boardSize) {
+      return false;
+    }
     for (let i = row; i < row + size; i++) {
       if (board[i][col] !== '') {
         return false;
@@ -97,6 +112,7 @@
   }
   return false;
 }
+
 
 
     
@@ -117,8 +133,7 @@
         }
       }
     }
-    renderBoard(playerBoard, playerBoardState, true);
-    renderBoard(aiBoard, aiBoardState, false);
+    
 
 
  </script>
