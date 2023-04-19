@@ -5,7 +5,8 @@ const path = require('path');
 const app = express();
 
 //replace with our  mongoDB connectiom string VVV
-const uri = "mongodb://localhost:27017/battleshipDB";
+const uri = "mongodb+srv://battleshipManager:1yT26ZvAdzJ1D7IN@cluster0.rmefqf2.mongodb.net/battleshipDb";
+
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'html')));
@@ -80,12 +81,12 @@ app.post('/leaderboard', async (req, res) => {
     const sort = { wins: -1 };
     const query = {};
 
-    users.find().sort(mysort).toArray(function(err, result) {
+    userarray = users.find().sort(mysort).toArray(function(err, result) {
       if (err) throw err;
       console.log(result);
       db.close();
     });
-    document.getElementById('user').innerHTML = users[0].username;
+    document.getElementById('user').innerHTML = userarray[0].username;
 
 
   } catch(error) {
