@@ -80,10 +80,14 @@ app.post('/leaderboard', async (req, res) => {
     const sort = { wins: -1 };
     const query = {};
 
-    const cursor = users.find(query).sort(sort);
-    await cursor.forEach(console.dir);
+    users.find().sort(mysort).toArray(function(err, result) {
+      if (err) throw err;
+      console.log(result);
+      db.close();
+    });
+    document.getElementById('user').innerHTML = users[0].username;
 
-    
+
   } catch(error) {
     console.error('Error connecting to the database', error);
     res.status(500).send('Internal Server Error');
