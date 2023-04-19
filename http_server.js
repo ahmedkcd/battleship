@@ -69,3 +69,23 @@ app.post('/register', async (req, res) => {
   }
 
 });
+app.post('/leaderboard', async (req, res) => {
+
+  try {
+    const client = await MongoClient.connect(uri, { usenewUrlParser: true, useUnifiedTopology: true});
+    const db = client.db('battleshipDB');
+    const users = db.collection('users');
+
+    // finds users in descending orders
+    const sort = { wins: -1 };
+    const query = {};
+
+    const cursor = users.find(query).sort(sort);
+    await cursor.forEach(console.dir);
+
+    
+  } catch(error) {
+    console.error('Error connecting to the database', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
