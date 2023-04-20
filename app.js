@@ -1,7 +1,8 @@
 const gameBoardSize = 10;
 
-let gameBoard = Array.from({length: gameBoardSize}, () => Array(gameBoardSize).fill(0));
-//This code defines the gameBoard
+let playerBoard = Array.from({length: gameBoardSize}, () => Array(gameBoardSize).fill(0));
+let aiBoard = Array.from({length: gameBoardSize}, () => Array(gameBoardSize).fill(0));
+//this code defines the game board for the A.I. and the player
 
 const ships = [
   {name: 'Carrier', size: 5},
