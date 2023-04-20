@@ -57,11 +57,11 @@ function placeShip(ship, row, col, direction) {
 
   for (let i = 0; i < ship.size; i++) {
     if (direction === DIRECTIONS.HORIZONTAL) {
-      gameBoard[row][col + i] = ship.name[0].toUpperCase();
+      gameBoard[row][col + i] = 1;
     } else {
-      gameBoard[row + i][col] = ship.name[0].toUpperCase();
-    }//this code places the ships
-  }
+      gameBoard[row + i][col] = 1;
+    }//This code places the ships in the array as a value of 1 accross the length of the ship
+}
 
   return true;
 }
