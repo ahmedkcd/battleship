@@ -1,113 +1,72 @@
-const playerBoard = document.getElementById('player-board');
-const aiBoard = document.getElementById('ai-board');
+const gameBoardSize = 10;
 
-const boardSize = 5;
+let gameBoard = Array.from({length: gameBoardSize}, () => Array(gameBoardSize).fill(0));
+//This code defines the gameBoard
+
 const ships = [
-
-  {name: 'Carrier', size: 5 },
-  {name: 'Battleship', size: 4 },
-  {name: 'Cruiser', size: 3 },
+  {name: 'Carrier', size: 5},
+  {name: 'Battleship', size: 4},
+  {name: 'Cruiser', size: 3},
   {name: 'Submarine', size: 3},
   {name: 'Destroyer', size: 2}
-
-];
+];//This part defines the ships
 
 const DIRECTIONS = {
-    HORIZONTAL: 'horizontal',
-    VERTICAL: 'vertical',
-};
+  HORIZONTAL: 'horizontal',
+  VERTICAL: 'vertical'
+};// this code defines the directions
 
-let playerBoardState = createEmptyBoard(boardSize);
-let aiBoardState = createEmptyBoard(boardSize);
-
-initalizeBoards(playerBoardState, aiBoardState);
-
-renderBoard(playerBoard, playerBoardState, true);
-
-renderBoard(aiBoard, aiBoardState, false);
-
-function initializeBoards(playerBoard, aiBoard) {
-    for (const ship of ships) {
-        placeShipsRandomly(playerBoard, ship);
-        placeShipsRandomly(aiBoard, ship);
-    }
-}
-
-function placeShipsRandomly(board, ship) {
+function givePlayerPieces() {
+  for (const ship of ships) {
     let placed = false;
-    while(!placed) {
-        const direction = Math.random() < 0.5 ? DIRECTIONS.HORIZONTAL : DIRECTIONS.VERTICAL;
-        const row = Math.floor(Math.random() * boardSize);
-        const col = Math.floor(Math.random() * boardSize);
-        placed = placeShip(board, ship, direction, row, col);
-    
-    }   
-}
+    while (!placed) {
+      let playerDirection = prompt("What direction do you want to place your " + ship.name + "? (V)ertical or (H)orizontal").toUpperCase();
+      let row = parseInt(prompt("What row do you want to place your " + ship.name + "?"));
+      let col = parseInt(prompt("What column do you want to place your " + ship.name + "?"));
 
-function createEmptyBoard(size) {
-    const board =[];
-    for(let i=0; i< size; i++) {
-        const row = [];
-        for(let j=0; j< size; j++) {
-            row.push('')
-        }
-        board.push(row);
+      const direction = playerDirection === 'V' ? DIRECTIONS.VERTICAL : DIRECTIONS.HORIZONTAL;
+      placed = placeShip(ship, row, col, direction); 
+// this code specifically places the ships after the player tells us where they want the ships at
     }
-    return board;
-}
+  }
+}//this code asks the player about the placement of their ships and all
 
-function placeShip(board, ship, direction, row, col) {
-    const size = ship.size;
-  
-    if (direction === DIRECTIONS.HORIZONTAL) {
-      if (col + size > BOARD_SIZE) {
-        return false;
-      }
-      for (let i = col; i < col + size; i++) {
-        if (board[row][i] !== '') {
-          return false;
-        }
-      }
-      for (let i = col; i < col + size; i++) {
-        board[row][i] = ship.name;
-      }
-      return true;
-    } else if (direction === DIRECTIONS.VERTICAL) {
-      if (row + size > BOARD_SIZE) {
-        return false;
-      }
-      for (let i = row; i < row + size; i++) {
-        if (board[i][col] !== '') {
-          return false;
-        }
-      }
-      for (let i = row; i < row + size; i++) {
-        board[i][col] = ship.name;
-      }
-      return true;
-    }
+function placeShip(ship, row, col, direction) {
+  if (
+    (direction === DIRECTIONS.HORIZONTAL && col + ship.size > gameBoardSize) ||
+    (direction === DIRECTIONS.VERTICAL && row + ship.size > gameBoardSize)
+  ) {
+    console.log("Ship placement out of bounds.");
     return false;
-  }
+  }// this is sentinel code
 
-
-
-
-
-
-function renderBoard(container, boardState, isPlayerBoard ) {
-  for(let row = 0; row < boardState.length; row++) {
-    for(let col = 0; col < boardState[row].length; col++) {
-      const cell = document.createElement('div');
-      cell.classList.add('cell');
-      if(isPlayerBoard) {
-        cell.dataset.row = row;
-        cell.dataset.col = col;
-        cell.addEventListener('click', () => {
-            handleCellClick(row, col);
-        });
-      }
-      cell.innerText = isPlayerBoard ? boardState[row][col] : ';'
-      container.appendChild(cell);
+  for (let i = 0; i < ship.size; i++)
+ {
+    if (direction === DIRECTIONS.HORIZONTAL) {
+      if (gameBoard[row][col + i] !== 0) {
+        console.log("There's already a ship at the specified location. Try again.");
+        return false;
+      }//this is more sentinel code
+    } else {
+      if (gameBoard[row + i][col] !== 0) {
+        console.log("There's already a ship at the specified location. Try again.");
+        return false;
+      }//this is more sentinel code
     }
   }
+
+  for (let i = 0; i < ship.size; i++) {
+    if (direction === DIRECTIONS.HORIZONTAL) {
+      gameBoard[row][col + i] = ship.name[0].toUpperCase();
+    } else {
+      gameBoard[row + i][col] = ship.name[0].toUpperCase();
+    }//this code places the ships
+  }
+
+  return true;
 }
+
+
+
+
+givePlayerPieces();
