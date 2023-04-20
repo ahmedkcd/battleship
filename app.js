@@ -1,10 +1,7 @@
 const gameBoardSize = 10;
-
 let playerBoard = Array.from({length: gameBoardSize}, () => Array(gameBoardSize).fill(0));
 let aiBoard = Array.from({length: gameBoardSize}, () => Array(gameBoardSize).fill(0));
 //this creates the game board for the A.I. and the player
-
-
 const ships = [
   {name: 'Carrier', size: 5},
   {name: 'Battleship', size: 4},
@@ -13,13 +10,11 @@ const ships = [
   {name: 'Destroyer', size: 2}
 ];
 //this creates the ships
-
 const DIRECTIONS = {
   HORIZONTAL: 'horizontal',
   VERTICAL: 'vertical'
 };
 //this defines the directions
-
 function givePlayerPieces() {
   for (const ship of ships) {
     let placed = false;
@@ -27,14 +22,12 @@ function givePlayerPieces() {
       let playerDirection = prompt("What direction do you want to place your " + ship.name + "? (V)ertical or (H)orizontal").toUpperCase();
       let row = parseInt(prompt("What row do you want to place your " + ship.name + "?"));
       let col = parseInt(prompt("What column do you want to place your " + ship.name + "?"));
-
       const direction = playerDirection === 'V' ? DIRECTIONS.VERTICAL : DIRECTIONS.HORIZONTAL;
       placed = placeShip(playerBoard, ship, row, col, direction);
     }
   }
 }
 //this gives the player their pieces
-
 function placeShip(board, ship, row, col, direction) {
   if (
     (direction === DIRECTIONS.HORIZONTAL && col + ship.size > gameBoardSize) ||
@@ -43,7 +36,6 @@ function placeShip(board, ship, row, col, direction) {
     console.log("Ship placement out of bounds.");
     return false;
   }//sentinel code
-
   for (let i = 0; i < ship.size; i++) {
     if (direction === DIRECTIONS.HORIZONTAL) {
       if (board[row][col + i] !== 0) {
@@ -57,7 +49,6 @@ function placeShip(board, ship, row, col, direction) {
       }
     }
   }//sentinel code
-
   for (let i = 0; i < ship.size; i++) {
     if (direction === DIRECTIONS.HORIZONTAL) {
       board[row][col + i] = 1;
@@ -65,34 +56,17 @@ function placeShip(board, ship, row, col, direction) {
       board[row + i][col] = 1;
     }
   }
-
   return true;
 }//places ships
-
-
-
-
-function createEmptyBoard(boardSize) {
-  return Array.from({length: boardSize}, () => Array(boardSize).fill(0));
-}
-let aiBoardState = createEmptyBoard(gameBoardSize);
-
-
-
-
 let playersTurn = true;
-
 function nextTurn() {
   playersTurn = !playersTurn;
 }
-
 function checkPlayerTurn() {
   if (!playersTurn) {
     aiAttack();
   }
 }//this code checks whos turn it is
-
-
 function canPlaceShip(board, ship, row, col, direction) {
   if (
     (direction === DIRECTIONS.HORIZONTAL && col + ship.size > gameBoardSize) ||
@@ -100,7 +74,6 @@ function canPlaceShip(board, ship, row, col, direction) {
   ) {
     return false;
   }
-
   for (let i = 0; i < ship.size; i++) {
     if (direction === DIRECTIONS.HORIZONTAL) {
       if (board[row][col + i] !== 0) {
@@ -112,10 +85,8 @@ function canPlaceShip(board, ship, row, col, direction) {
       }
     }
   }
-
   return true;
 }
-
 function aiPlaceShip() {
   for (const ship of ships) {
     let placed = false;
@@ -137,8 +108,6 @@ function aiPlaceShip() {
     }
   }
 }// all of this code creates ship placements for the A.I.s board
-
-
 function attack(board, row, column) {
   if (board[row][column] === 1) {
     console.log("Hit!");
@@ -149,7 +118,6 @@ function attack(board, row, column) {
     nextTurn();
   }
 }// this is the attack function for the player
-
 function aiAttack() {
   const row = Math.floor(Math.random() * gameBoardSize);
   const col = Math.floor(Math.random() * gameBoardSize);
