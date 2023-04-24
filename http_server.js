@@ -49,7 +49,7 @@ app.post('/register', async (req, res) => {
     const users = db.collection('users');
 
     //insert new user to battleship user collection
-    const existingUser = await users.insertOne({username, password, email});
+    const existingUser = await users.findOne({ $or: [{username }, { email}] });
 
     if (existingUser) {
       //if username or email already exists, send an error
