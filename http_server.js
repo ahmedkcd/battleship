@@ -17,7 +17,7 @@ app.post('/login', async (req, res) => {
   try {
     const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     //replace with our mongodb database name v v
-    const db = client.db('battleshipDB');
+    const db = client.db('battleshipDb');
     const users = db.collection('users');
 
     const user = await users.findOne({username, password});
@@ -45,7 +45,7 @@ app.post('/register', async (req, res) => {
 
   try {
     const client = await MongoClient.connect(uri, { usenewUrlParser: true, useUnifiedTopology: true});
-    const db = client.db('battleshipDB');
+    const db = client.db('battleshipDb');
     const users = db.collection('users');
 
     //insert new user to battleship user collection
@@ -53,7 +53,8 @@ app.post('/register', async (req, res) => {
 
     if (existingUser) {
       //if username or email already exists, send an error
-      res.status(409).send("Username or email already exists");
+      res.status(409).send("Username or email already exists. <br><a href='/'>Go back</a>");
+      
     } else {
       await users.insertOne({username, password, email});
       client.close();
@@ -74,7 +75,7 @@ app.post('/leaderboard', async (req, res) => {
 
   try {
     const client = await MongoClient.connect(uri, { usenewUrlParser: true, useUnifiedTopology: true});
-    const db = client.db('battleshipDB');
+    const db = client.db('battleshipDb');
     const users = db.collection('users');
 
     // finds users in descending orders
