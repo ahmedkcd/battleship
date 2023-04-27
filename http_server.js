@@ -4,6 +4,8 @@ const {MongoClient} = require('mongodb');
 const path = require('path');
 const app = express();
 
+
+
 //replace with our  mongoDB connectiom string VVV
 const uri = "mongodb+srv://battleshipManager:1yT26ZvAdzJ1D7IN@cluster0.rmefqf2.mongodb.net/battleshipDb";
 
