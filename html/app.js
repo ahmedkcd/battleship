@@ -1,4 +1,4 @@
-const gamesBoardContainer = document.querySelector('#gamesboard-container')
+const gbContainer = document.querySelector('#gb-container')
 const optionContainer = document.querySelector('.option-container')
 const flipButton = document.querySelector('#flip-button')
 const startButton = document.querySelector('#start-button')
@@ -30,7 +30,7 @@ function createBoard(color, user) {
     gameBoardContainer.append(block)
   }
 
-  gamesBoardContainer.append(gameBoardContainer)
+  gbContainer.append(gameBoardContainer)
 }
 //giving color to the boards, through javascript
 createBoard('aquamarine', 'player')
