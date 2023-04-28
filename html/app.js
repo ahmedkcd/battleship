@@ -32,8 +32,9 @@ function createBoard(color, user) {
 
   gamesBoardContainer.append(gameBoardContainer)
 }
-createBoard('yellow', 'player')
-createBoard('pink', 'computer')
+//giving color to the boards, through javascript
+createBoard('aquamarine', 'player')
+createBoard('aquamarine', 'computer')
 
 class Ship {
   constructor(name, length) {

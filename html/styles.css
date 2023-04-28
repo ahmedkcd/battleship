@@ -23,29 +23,29 @@
     width: 500px;
     height: 60px;
     margin: 30px 0;
-    background-color: yellow;
+    background-color: darkgray;
     display: flex;
     align-items: center;
 }
 
 .destroyer {
-    background-color: brown;
+    background-color: orange;
 }
 
 .submarine {
-    background-color:green;
+    background-color:mediumpurple;
 }
 
 .cruiser {
-    background-color:purple;
+    background-color:black;
 }
 
 .battleship {
-    background-color:orange;
+    background-color:olive;
 }
 
 .carrier {
-    background-color: blue;
+    background-color: indigo;
 }
 
 .destroyer-preview {
@@ -87,7 +87,7 @@
 #computer .cruiser,
 #computer .battleship,
 #computer .carrier {
-    background-color: pink;
+    background-color: aquamarine;
 }
 
 
