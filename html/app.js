@@ -9,6 +9,12 @@ const startButton = document.querySelector('#start-button')
 const infoDisplay = document.querySelector('#info')
 const turnDisplay = document.querySelector('#turn-display')
 
+const username = document.querySelector('#username span');
+fetch('/getUsername')
+  .then(res => res.text())
+  .then(data => username.textContent = data);
+
+
 /*
 function to flip user ships, if angle of ship is equal to 0 degrees, then flip to 90
 works vice-versa, if ship angle is 90 degrees, flips back to 0
@@ -27,7 +33,7 @@ const optionShips = Array.from(optionContainer.children)
 flipButton.addEventListener('click', flip)
 
 
-/*create gameboard, composed of 100 squares. Each square holds an id of i
+/*create gameboard, each board composed of 100 squares. Each square holds an id of i
 block id is used later to determine if block is taken by ship, helps to register
 hits or misses, which then get added to an array
 */
@@ -363,9 +369,22 @@ function checkScore(user, userHits, userSunkShips) {
   if (playerSunkShips.length === 5) {
     infoDisplay.textContent = 'You Sunk all the Computers Ships. YOU WIN'
     gameOver = true
+    updateWinLoss(username, 'wins')
   }
   if (computerSunkShips.length === 5) {
     infoDisplay.textContent = 'The computer sunk all your ships. YOU LOSE'
     gameOver = true
+    updateWinLoss(username, 'losses')
   }
+}
+
+function updateWinLoss(username, winLoss) {
+  fetch('/updateWinLoss', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, winLoss })
+  })
+    .then(res => res.json())
+    .then(data => console.log(data))
+    .catch(err => console.error(err))
 }
