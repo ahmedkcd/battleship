@@ -3,7 +3,7 @@ document.querySelector returns the first element that matches
 . used to grab class attribute, # used to grab id attribute
 */
 const gbContainer = document.querySelector('#gb-container')
-const optionContainer = document.querySelector('.option-container')
+const shipContainer = document.querySelector('.ship-container')
 const flipButton = document.querySelector('#flip-button')
 const startButton = document.querySelector('#start-button')
 const infoDisplay = document.querySelector('#info')
@@ -21,7 +21,7 @@ works vice-versa, if ship angle is 90 degrees, flips back to 0
 */
 let angle = 0
 function flip() {
-const optionShips = Array.from(optionContainer.children)
+const optionShips = Array.from(shipContainer.children)
     if (angle === 0) {
       angle = 90;
     } else {
@@ -185,7 +185,7 @@ ships.forEach(ship => addShipPiece('computer', ship))
 
 //Functions allowing player to drag ships to gameboard
 let draggedShip
-const optionShips = Array.from(optionContainer.children)
+const optionShips = Array.from(shipContainer.children)
 optionShips.forEach(optionShip => optionShip.addEventListener('dragstart', dragStart))
 
 const allPlayerBlocks = document.querySelectorAll('#player div')
@@ -214,7 +214,9 @@ function dropShip(e) {
   }
 }
 
-//function to Highlight placement of the ship, shows where it will be placed on the board
+/* function to Highlight placement of the ship, shows where it will be placed on the board
+Check validity function called here to show visual indicator valid spots */
+
 function highlightArea( startIndex, ship) {
   const allBoardBlocks = document.querySelectorAll('#player div')
   let isHorizontal = angle === 0
@@ -233,28 +235,35 @@ function highlightArea( startIndex, ship) {
 let gameOver = false
 let playerTurn
 
-//start game, Will only work if all player ships have been placed
-function startGame() {
-  if (playerTurn === undefined) {
-    if (optionContainer.children.length != 0) {
-      infoDisplay.textContent = 'Please place all your pieces first!'
-    } else {
-      const allBoardBlocks = document.querySelectorAll('#computer div')
-      allBoardBlocks.forEach(block => block.addEventListener('click', handleClick))
-      playerTurn = true
-      turnDisplay.textContent = 'Your Turn'
-      infoDisplay.textContent = 'The game has started!'
-    }
-    
-  }
-  
-}
+/* start game function, Will only work if all player ships have been placed on board
+Listener waits for player click on startGame button
+*/
+
 startButton.addEventListener('click', startGame)
 
 let playerHits = []
 let computerHits = []
 const playerSunkShips = []
 const computerSunkShips = []
+
+
+function startGame() {
+  if (playerTurn === undefined) {
+    if (shipContainer.children.length != 0) {
+      infoDisplay.textContent = 'Please place all your ships first!'
+    } else {
+      const allBoardBlocks = document.querySelectorAll('#computer div')
+      allBoardBlocks.forEach(block => block.addEventListener('click', handleClick))
+      playerTurn = true
+      turnDisplay.textContent = 'Its Your Turn!'
+      infoDisplay.textContent = 'The game has started! Make your move!'
+    }
+    
+  }
+  
+}
+
+
 
 /*
 Event handler function for when player Clicks on computer board,
@@ -276,7 +285,7 @@ function handleClick(e) {
       checkScore('player', playerHits, playerSunkShips)
     }
     if (!e.target.classList.contains('taken')) {
-      infoDisplay.textContent = 'Nothing Hit this time.'
+      infoDisplay.textContent = 'You hit Nothing Hit this time.'
       e.target.classList.add('empty')
     }
     playerTurn = false
@@ -286,8 +295,12 @@ function handleClick(e) {
   }
 }
 
-/*defining computers move, currently Computer only randomly selects spaces
- in the future this could be changed to incorporate better ai
+/* Function defines computer AI, currently Computer only randomly selects spaces.
+Very first thing it checks is if game is over, if NOT then the computer's move begins.
+setTimeout simulates computer thinking, then the game chooses a random number between 0 and
+100 to decide which space to attack. IF space has hit and taken class = space already hit, -
+-> calls itself to select new space. if space has taken class but NOT hit class = computer hit
+player ship. checkScore() keeps tracker of computerHits and computerSunkShips
 */
 function computerGo() {
   if (!gameOver) {
@@ -316,7 +329,7 @@ function computerGo() {
         computerHits.push(...classes)
         checkScore('computer', computerHits, computerSunkShips)
       } else {
-        infoDisplay.textContent = 'Nothing hit this time.'
+        infoDisplay.textContent = 'The computer didnt hit anything.'
         allBoardBlocks[randomGo].classList.add('empty')
       }
     }, 3000)

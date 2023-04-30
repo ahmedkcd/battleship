@@ -4,7 +4,7 @@
     display: flex;
     justify-content: space-between;
 }
-
+/* Game board attributes,affects size of board, + page styling*/
 .game-board {
     width: 200px;
     height: 200px;
@@ -13,14 +13,14 @@
     border: 1px solid black;
     
 }
-
+/* The blocks that make up the gameboard*/
 .block {
     width: 20px;
     height: 20px;
     
 }
-
-.option-container {
+/* Option container, this is where all the player ships are stored*/
+.ship-container {
     width: 400px;
     height: 60px;
     margin: 20px 0;
@@ -31,7 +31,9 @@
     border: 1px solid black;
 }
 
-
+/*Each Ship has a preview and the ship itself. The ships are always of a set size, the only
+thing set here is the color. The previews are the small version of the ships that reside
+within the ship-container */
 .destroyer {
     background-color: orange;
 }
@@ -83,9 +85,10 @@
 }
 
 .hover {
-    background-color: grey;
+    background-color: teal;
 }
-
+/*Styling for computer ships, The way we keep the computer ships invisble is by
+keeping background color + ship color the same*/
 #computer .destroyer,
 #computer .submarine,
 #computer .cruiser,
@@ -94,7 +97,7 @@
     background-color: aquamarine;
 }
 
-
+/* These colors override the space color, to register hit or miss */
 .hit {
     background-color: red !important;
 }

@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>JS BAttleship</title>
+    <title>BAttleship</title>
     <link rel="stylesheet" href="styles.css"/>
 </head>
 
 <body>
-    <div id="username">Welcome, <span></span></div>
+    <div id="username">Welcome to Battleship, <span></span></div>
 
     <h4> Your Ships</h4>
-    <div class="option-container">
+    <div class="ship-container">
         <div id="0" class="destroyer-preview destroyer" draggable="true"></div>
         <div id="1" class="submarine-preview submarine" draggable="true"></div>
         <div id="2" class="cruiser-preview cruiser" draggable="true"></div>
@@ -18,14 +18,14 @@
         <div id="4" class="carrier-preview carrier" draggable="true"></div>
     </div>
 
-    <button id="flip-button">FLIP</button>
-    <button id="start-button">START</button>
+    <button id="flip-button">Flip ships</button>
+    <button id="start-button">Start Game</button>
     <hr>
     <div id="gb-container"></div>
     <hr>
     <div id="game-info">
-        <p>Turn: <span id="turn-display"></span></p>
-        <p>Info:<span id="info"></span></p>
+        <p>Who's Turn: <span id="turn-display"></span></p>
+        <p>:<span id="info"></span></p>
     </div>
     
     <script src="app.js"></script>
