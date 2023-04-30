@@ -74,6 +74,7 @@ app.post('/register', async (req, res) => {
         totalShipsSunk: 0,
       };
       await users.insertOne(newUser);
+      req.session.username = username;
       client.close();
       //if username/email doesnt exist Creates account
       res.redirect('/gamepage.html');
