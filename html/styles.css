@@ -10,6 +10,7 @@
     height: 200px;
     display: flex;
     flex-wrap: wrap;
+    border: 1px solid black;
     
 }
 
@@ -20,13 +21,16 @@
 }
 
 .option-container {
-    width: 500px;
+    width: 400px;
     height: 60px;
-    margin: 30px 0;
+    margin: 20px 0;
     background-color: darkgray;
     display: flex;
+    justify-content: center;
     align-items: center;
+    border: 1px solid black;
 }
+
 
 .destroyer {
     background-color: orange;
@@ -91,7 +95,7 @@
 }
 
 
-.boom {
+.hit {
     background-color: red !important;
 }
 

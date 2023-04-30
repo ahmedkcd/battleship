@@ -5,14 +5,9 @@
     <title>JS BAttleship</title>
     <link rel="stylesheet" href="styles.css"/>
 </head>
+
 <body>
-    <div id="game-info">
-        <p>Turn: <span id="turn-display"></span></p>
-        <p>Info:<span id="info"></span></p>
-    </div>
-
-    <div id="gb-container"></div>
-
+    <h4> Your Ships</h4>
     <div class="option-container">
         <div id="0" class="destroyer-preview destroyer" draggable="true"></div>
         <div id="1" class="submarine-preview submarine" draggable="true"></div>
@@ -23,6 +18,13 @@
 
     <button id="flip-button">FLIP</button>
     <button id="start-button">START</button>
+    <hr>
+    <div id="gb-container"></div>
+    <hr>
+    <div id="game-info">
+        <p>Turn: <span id="turn-display"></span></p>
+        <p>Info:<span id="info"></span></p>
+    </div>
 
     <script src="app.js"></script>
 
