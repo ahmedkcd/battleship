@@ -38,26 +38,14 @@ within the ship-container */
     background-color: orange;
 }
 
-.submarine {
-    background-color:mediumpurple;
-}
-
-.cruiser {
-    background-color:black;
-}
-
-.battleship {
-    background-color:magenta;
-}
-
-.carrier {
-    background-color: indigo;
-}
-
 .destroyer-preview {
     width: 20px;
     height: 10px;
     margin: 3px;
+}
+
+.submarine {
+    background-color:mediumpurple;
 }
 
 .submarine-preview {
@@ -66,10 +54,18 @@ within the ship-container */
     margin: 3px;
 }
 
+.cruiser {
+    background-color:black;
+}
+
 .cruiser-preview {
     width: 30px;
     height: 10px;
     margin: 3px;
+}
+
+.battleship {
+    background-color:magenta;
 }
 
 .battleship-preview {
@@ -78,17 +74,16 @@ within the ship-container */
     margin: 3px;
 }
 
+.carrier {
+    background-color: indigo;
+}
+
 .carrier-preview {
     width: 50px;
     height: 10px;
     margin: 3px;
 }
 
-.hover {
-    background-color: teal;
-}
-/*Styling for computer ships, The way we keep the computer ships invisble is by
-keeping background color + ship color the same*/
 #computer .destroyer,
 #computer .submarine,
 #computer .cruiser,
@@ -105,3 +100,9 @@ keeping background color + ship color the same*/
 .empty {
     background-color: grey !important;
 }
+
+.hover {
+    background-color: teal;
+}
+/*Styling for computer ships, The way we keep the computer ships invisble is by
+keeping background color + ship color the same*/

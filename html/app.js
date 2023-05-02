@@ -6,14 +6,14 @@ gb-container = gameboard
 ship-container = Your ships container
 flip button
 start button
-infoDisplay = info regarding result of moves
+turnInfo = info regarding result of moves 
 turnDisplay = who's turn is it
 */
 const gbContainer = document.querySelector('#gb-container')
 const shipContainer = document.querySelector('.ship-container')
 const flipButton = document.querySelector('#flip-button')
 const startButton = document.querySelector('#start-button')
-const infoDisplay = document.querySelector('#info')
+const turnInfo = document.querySelector('#info')
 const turnDisplay = document.querySelector('#turn-display')
 
 const username = document.querySelector('#username span');
@@ -80,8 +80,6 @@ const battleship = new Ship('battleship', 4)
 const carrier = new Ship('carrier', 5)
 const ships = [destroyer, submarine, cruiser, battleship, carrier]
 
-let notDropped
-
 /*checks the placement of the player ships, whether or not its a valid space
 if horizontal, checks that the ship has enough space to the right of the start index,
 if not, the start index gets moved by the difference of ship length and available space.
@@ -100,6 +98,7 @@ function called in add ship piece, and in highlight placement function
 used this as resource to help with game Logic 
 https://jhonny-chamoun.medium.com/battleship-the-game-step1-userinterface-and-game-logic-8abba52746cd
 */
+
 function checkShipPlacement(allBoardBlocks, shipOrientation, startIndex, ship) {
     let validStart;
     if (shipOrientation) {
@@ -162,6 +161,7 @@ adds the ship class and the taken class to each of the ship blocks.
 For computer, if placement is NOT valid, recursively calls itself to try a new start location
 */
 
+let notDropped
 function addShipPiece(user, ship, startId) {
     const allBoardBlocks = document.querySelectorAll(`#${user} div`);
     let randomBoolean = Math.random() < 0.5;
@@ -198,6 +198,7 @@ ships.forEach(ship => addShipPiece('computer', ship))
 
 //Functions allowing player to drag ships to gameboard
 //https://www.javascripttutorial.net/web-apis/javascript-drag-and-drop/
+
 let draggedShip
 const optionShips = Array.from(shipContainer.children)
 optionShips.forEach(optionShip => optionShip.addEventListener('dragstart', dragStart))
@@ -245,7 +246,8 @@ function highlightArea( startIndex, ship) {
   }
 }
 
-//game logic Functions
+//THIS SECTION INCLUDES ALL THE GAME LOGIC FUNCTIONS //
+
 let gameOver = false
 let playerTurn
 
@@ -264,13 +266,13 @@ const computerSunkShips = []
 function startGame() {
   if (playerTurn === undefined) {
     if (shipContainer.children.length != 0) {
-      infoDisplay.textContent = 'Please place all your ships first!'
+      turnInfo.textContent = 'Please place all your ships first!'
     } else {
       const allBoardBlocks = document.querySelectorAll('#computer div')
       allBoardBlocks.forEach(block => block.addEventListener('click', handlePlayerClick))
       playerTurn = true
       turnDisplay.textContent = 'Its Your Turn!'
-      infoDisplay.textContent = 'The game has started! Make your move!'
+      turnInfo.textContent = 'The game has started! Make your move!'
     }
     
   }
@@ -291,7 +293,7 @@ function handlePlayerClick(e) {
   if (!gameOver) {
     if (e.target.classList.contains('taken')) {
       e.target.classList.add('hit')
-      infoDisplay.textContent = 'You hit the computers ship!'
+      turnInfo.textContent = 'You hit the computers ship!'
       let classes = Array.from(e.target.classList)
       classes = classes.filter(className => className !== 'block')
       classes = classes.filter(className => className !== 'hit')
@@ -301,7 +303,7 @@ function handlePlayerClick(e) {
 
     }
     if (!e.target.classList.contains('taken')) {
-      infoDisplay.textContent = 'You hit Nothing Hit this time.'
+      turnInfo.textContent = 'You hit Nothing this time X .'
       e.target.classList.add('empty')
     }
     playerTurn = false
@@ -321,7 +323,7 @@ player ship. checkGameOver() keeps tracker of computerHits and computerSunkShips
 function computerGo() {
   if (!gameOver) {
     turnDisplay.textContent = 'Computers Turn!'
-    infoDisplay.textContent = 'The computer is thinking...'
+    turnInfo.textContent = 'The computer is thinking...'
 
     setTimeout(() => {
       let randomGo = Math.floor(Math.random() * width * width)
@@ -337,7 +339,7 @@ function computerGo() {
         !allBoardBlocks[randomGo].classList.contains('hit')
       ) {
         allBoardBlocks[randomGo].classList.add('hit')
-        infoDisplay.textContent = 'The Computer hit your ship!'
+        turnInfo.textContent = 'The Computer hit your ship!'
         let classes = Array.from(allBoardBlocks[randomGo].classList)
         classes = classes.filter(className => className !== 'block')
         classes = classes.filter(className => className !== 'hit')
@@ -345,7 +347,7 @@ function computerGo() {
         computerHits.push(...classes)
         checkGameOver('computer', computerHits, computerSunkShips)
       } else {
-        infoDisplay.textContent = 'The computer didnt hit anything.'
+        turnInfo.textContent = 'The computer didnt hit anything.'
         allBoardBlocks[randomGo].classList.add('empty')
       }
     }, 3000)
@@ -353,7 +355,7 @@ function computerGo() {
     setTimeout(() => {
       playerTurn = true
       turnDisplay.textContent = 'Your Turn!'
-      infoDisplay.textContent = 'Please take your turn.'
+      turnInfo.textContent = 'Please take your turn.'
       const allBoardBlocks = document.querySelectorAll('#computer div')
       allBoardBlocks.forEach(block => block.addEventListener('click', handlePlayerClick))
     }, 6000)
@@ -375,11 +377,11 @@ function checkGameOver(user, userHits, userSunkShips) {
     ) {
       
       if (user === 'player') {
-        infoDisplay.textContent = `you sunk the computer's ${shipName}`
+        turnInfo.textContent = `you sunk the computer's ${shipName}`
         playerHits = userHits.filter(storedShipName => storedShipName !== shipName)
       }
       if (user === 'computer') {
-        infoDisplay.textContent = `The computer sunk your ${shipName}`
+        turnInfo.textContent = `The computer sunk your ${shipName}`
         computerHits = userHits.filter(storedShipName => storedShipName !== shipName)
       }
       userSunkShips.push(shipName)
@@ -396,12 +398,12 @@ function checkGameOver(user, userHits, userSunkShips) {
   console.log('playerSunkShips', playerSunkShips)
 
   if (playerSunkShips.length === 5) {
-    infoDisplay.textContent = 'You Sunk all the Computers Ships. YOU WIN'
+    turnInfo.textContent = 'You Sunk all the Computers Ships. YOU WIN'
     gameOver = true
     updateWinLoss(username, 'wins')
   }
   if (computerSunkShips.length === 5) {
-    infoDisplay.textContent = 'The computer sunk all your ships. YOU LOSE'
+    turnInfo.textContent = 'The computer sunk all your ships. YOU LOSE'
     gameOver = true
     updateWinLoss(username, 'losses')
   }
