@@ -88,6 +88,8 @@ ensures that no two ships overlap, and that ships cannot fit outside the gameboa
 returns object with shipBlocks valid and notTaken
 
 function called in add ship piece, and in highlight placement function
+used this as resource to help with game Logic 
+https://jhonny-chamoun.medium.com/battleship-the-game-step1-userinterface-and-game-logic-8abba52746cd
 */
 function checkShipPlacement(allBoardBlocks, shipOrientation, startIndex, ship) {
     let validStart;
@@ -183,7 +185,7 @@ ships.forEach(ship => addShipPiece('computer', ship))
 
 
 //Functions allowing player to drag ships to gameboard
-//Referenced https://www.javascripttutorial.net/web-apis/javascript-drag-and-drop/
+//https://www.javascripttutorial.net/web-apis/javascript-drag-and-drop/
 let draggedShip
 const optionShips = Array.from(shipContainer.children)
 optionShips.forEach(optionShip => optionShip.addEventListener('dragstart', dragStart))
