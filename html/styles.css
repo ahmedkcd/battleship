@@ -1,4 +1,4 @@
-
+/* APW Javascript Section 4 Anthony Pfau, Ahmed Kaced, Christopher Martinez, Christian Betia */
 #gb-container {
     width: 500px;
     display: flex;
@@ -13,7 +13,7 @@
     border: 1px solid black;
     
 }
-/* The blocks that make up the gameboard*/
+/* The blocks that make up the gameboard, would have to manually size up the squares along with board size to keep ratio*/
 .block {
     width: 20px;
     height: 20px;

@@ -1,6 +1,13 @@
+//APW Javascript Section 4 Anthony Pfau, Ahmed Kaced, Christopher Martinez, Christian Betia
 /*
 document.querySelector returns the first element that matches
 . used to grab class attribute, # used to grab id attribute
+gb-container = gameboard
+ship-container = Your ships container
+flip button
+start button
+infoDisplay = info regarding result of moves
+turnDisplay = who's turn is it
 */
 const gbContainer = document.querySelector('#gb-container')
 const shipContainer = document.querySelector('.ship-container')
@@ -54,7 +61,7 @@ function createBoard(color, user) {
 
   gbContainer.append(gameBoardContainer)
 }
-//giving color to the boards, through javascript
+//giving color to the boards through javascript. Computer board color must always remain SAME color as computer ship pieces
 createBoard('aquamarine', 'player')
 createBoard('aquamarine', 'computer')
 
@@ -72,11 +79,13 @@ const cruiser = new Ship('cruiser', 3)
 const battleship = new Ship('battleship', 4)
 const carrier = new Ship('carrier', 5)
 const ships = [destroyer, submarine, cruiser, battleship, carrier]
+
 let notDropped
 
 /*checks the placement of the player ships, whether or not its a valid space
-if horizontal, chekcs that the ship has enough space to the right of the start index,
-if not, the start index gets moved by the difference of ship length and available space
+if horizontal, checks that the ship has enough space to the right of the start index,
+if not, the start index gets moved by the difference of ship length and available space.
+For example: carrier = ship.length 5 , so start index must be width of board - 5
 
 if vertical, checks whether ship can fit in space below startIndex, if not moves the start
 index up by the difference of ship length and width of the game board and the available space
@@ -106,6 +115,7 @@ function checkShipPlacement(allBoardBlocks, shipOrientation, startIndex, ship) {
         validStart = startIndex - ship.length * width + width;
       }
     }
+
     let shipBlocks = [];
     for (let i = 0; i < ship.length; i++) {
       if (shipOrientation) {
@@ -114,6 +124,7 @@ function checkShipPlacement(allBoardBlocks, shipOrientation, startIndex, ship) {
         shipBlocks.push(allBoardBlocks[Number(validStart) + i * width]);
       }
     }
+
     let valid;
     if (shipOrientation) {
       shipBlocks.every((_shipBlock, index) => {
@@ -125,6 +136,7 @@ function checkShipPlacement(allBoardBlocks, shipOrientation, startIndex, ship) {
           return false;
         }
       });
+      
     } else {
       shipBlocks.every((_shipBlock, index) => {
         if (shipBlocks[0].id < 90 + (width * index + 1)) {
