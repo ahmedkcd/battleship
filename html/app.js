@@ -35,7 +35,7 @@ flipButton.addEventListener('click', flip)
 
 /*create gameboard, each board composed of 100 squares. Each square holds an id of i
 block id is used later to determine if block is taken by ship, helps to register
-hits or misses, which then get added to an array
+hits or misses which then get added to an array
 */
 const width = 10
 
@@ -73,6 +73,7 @@ const battleship = new Ship('battleship', 4)
 const carrier = new Ship('carrier', 5)
 const ships = [destroyer, submarine, cruiser, battleship, carrier]
 let notDropped
+
 /*checks the placement of the player ships, whether or not its a valid space
 if horizontal, chekcs that the ship has enough space to the right of the start index,
 if not, the start index gets moved by the difference of ship length and available space
@@ -88,9 +89,9 @@ returns object with shipBlocks valid and notTaken
 
 function called in add ship piece, and in highlight placement function
 */
-function checkValidity(allBoardBlocks, isHorizontal, startIndex, ship) {
+function checkShipPlacement(allBoardBlocks, shipOrientation, startIndex, ship) {
     let validStart;
-    if (isHorizontal) {
+    if (shipOrientation) {
       if (startIndex <= width * width - ship.length) {
         validStart = startIndex;
       } else {
@@ -103,18 +104,16 @@ function checkValidity(allBoardBlocks, isHorizontal, startIndex, ship) {
         validStart = startIndex - ship.length * width + width;
       }
     }
-
     let shipBlocks = [];
     for (let i = 0; i < ship.length; i++) {
-      if (isHorizontal) {
+      if (shipOrientation) {
         shipBlocks.push(allBoardBlocks[Number(validStart) + i]);
       } else {
         shipBlocks.push(allBoardBlocks[Number(validStart) + i * width]);
       }
     }
-
     let valid;
-    if (isHorizontal) {
+    if (shipOrientation) {
       shipBlocks.every((_shipBlock, index) => {
         if (shipBlocks[0].id % width !== width - (shipBlocks.length - (index + 1))) {
           valid = true;
@@ -143,7 +142,7 @@ function checkValidity(allBoardBlocks, isHorizontal, startIndex, ship) {
 
 /*function to add ship piece to gameboard, does so for both computer and player pieces
 uses random boolean to determine if it should be horizontal or vertical
-calls checkValidity, to ensure placement is valid
+calls checkShipPlacement, to ensure placement is valid
 If the ship placement is valid and the blocks are not taken, the function 
 adds the ship class and the taken class to each of the ship blocks.
 For computer, if placement is NOT valid, recursively calls itself to try a new start location
@@ -152,11 +151,11 @@ For computer, if placement is NOT valid, recursively calls itself to try a new s
 function addShipPiece(user, ship, startId) {
     const allBoardBlocks = document.querySelectorAll(`#${user} div`);
     let randomBoolean = Math.random() < 0.5;
-    let isHorizontal;
+    let shipOrientation;
     if (user === 'player') {
-      isHorizontal = angle === 0;
+      shipOrientation = angle === 0;
     } else {
-      isHorizontal = randomBoolean;
+      shipOrientation = randomBoolean;
     }
     let randomStartIndex = Math.floor(Math.random() * width * width);
     let startIndex;
@@ -165,7 +164,7 @@ function addShipPiece(user, ship, startId) {
     } else {
       startIndex = randomStartIndex;
     }
-    const { shipBlocks, valid, notTaken } = checkValidity(allBoardBlocks, isHorizontal, startIndex, ship);
+    const { shipBlocks, valid, notTaken } = checkShipPlacement(allBoardBlocks, shipOrientation, startIndex, ship);
     if (valid && notTaken) {
       shipBlocks.forEach(shipBlock => {
         shipBlock.classList.add(ship.name);
@@ -184,6 +183,7 @@ ships.forEach(ship => addShipPiece('computer', ship))
 
 
 //Functions allowing player to drag ships to gameboard
+//Referenced https://www.javascripttutorial.net/web-apis/javascript-drag-and-drop/
 let draggedShip
 const optionShips = Array.from(shipContainer.children)
 optionShips.forEach(optionShip => optionShip.addEventListener('dragstart', dragStart))
@@ -219,9 +219,9 @@ Check validity function called here to show visual indicator valid spots */
 
 function highlightArea( startIndex, ship) {
   const allBoardBlocks = document.querySelectorAll('#player div')
-  let isHorizontal = angle === 0
+  let shipOrientation = angle === 0
 
-  const { shipBlocks, valid, notTaken } = checkValidity(allBoardBlocks, isHorizontal, startIndex, ship)
+  const { shipBlocks, valid, notTaken } = checkShipPlacement(allBoardBlocks, shipOrientation, startIndex, ship)
 
   if (valid && notTaken) {
     shipBlocks.forEach(shipBlock => {
@@ -253,7 +253,7 @@ function startGame() {
       infoDisplay.textContent = 'Please place all your ships first!'
     } else {
       const allBoardBlocks = document.querySelectorAll('#computer div')
-      allBoardBlocks.forEach(block => block.addEventListener('click', handleClick))
+      allBoardBlocks.forEach(block => block.addEventListener('click', handlePlayerClick))
       playerTurn = true
       turnDisplay.textContent = 'Its Your Turn!'
       infoDisplay.textContent = 'The game has started! Make your move!'
@@ -272,7 +272,8 @@ extracts classes of block, then adds to playerHits array or computerHits array
 After click on board, sets players turn to false, making it the computers turn.
 */
 
-function handleClick(e) {
+function handlePlayerClick(e) {
+
   if (!gameOver) {
     if (e.target.classList.contains('taken')) {
       e.target.classList.add('hit')
@@ -282,7 +283,8 @@ function handleClick(e) {
       classes = classes.filter(className => className !== 'hit')
       classes = classes.filter(className => className !== 'taken')
       playerHits.push(...classes)
-      checkScore('player', playerHits, playerSunkShips)
+      checkGameOver('player', playerHits, playerSunkShips)
+
     }
     if (!e.target.classList.contains('taken')) {
       infoDisplay.textContent = 'You hit Nothing Hit this time.'
@@ -300,7 +302,7 @@ Very first thing it checks is if game is over, if NOT then the computer's move b
 setTimeout simulates computer thinking, then the game chooses a random number between 0 and
 100 to decide which space to attack. IF space has hit and taken class = space already hit, -
 -> calls itself to select new space. if space has taken class but NOT hit class = computer hit
-player ship. checkScore() keeps tracker of computerHits and computerSunkShips
+player ship. checkGameOver() keeps tracker of computerHits and computerSunkShips
 */
 function computerGo() {
   if (!gameOver) {
@@ -327,7 +329,7 @@ function computerGo() {
         classes = classes.filter(className => className !== 'hit')
         classes = classes.filter(className => className !== 'taken')
         computerHits.push(...classes)
-        checkScore('computer', computerHits, computerSunkShips)
+        checkGameOver('computer', computerHits, computerSunkShips)
       } else {
         infoDisplay.textContent = 'The computer didnt hit anything.'
         allBoardBlocks[randomGo].classList.add('empty')
@@ -339,7 +341,7 @@ function computerGo() {
       turnDisplay.textContent = 'Your Turn!'
       infoDisplay.textContent = 'Please take your turn.'
       const allBoardBlocks = document.querySelectorAll('#computer div')
-      allBoardBlocks.forEach(block => block.addEventListener('click', handleClick))
+      allBoardBlocks.forEach(block => block.addEventListener('click', handlePlayerClick))
     }, 6000)
   }
 }
@@ -352,7 +354,7 @@ This determines if ship is sunk, pushes ship name to userSunkShips array.
 Also checks if all ships have been sunk, if shipsSunk = 5, then GAME OVER
 */
 
-function checkScore(user, userHits, userSunkShips) {
+function checkGameOver(user, userHits, userSunkShips) {
   function checkShip(shipName, shipLength) {
     if (
       userHits.filter(storedShipName => storedShipName === shipName).length === shipLength

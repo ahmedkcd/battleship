@@ -21,8 +21,8 @@
 }
 /* Option container, this is where all the player ships are stored*/
 .ship-container {
-    width: 400px;
-    height: 60px;
+    width: 300px;
+    height: 80px;
     margin: 20px 0;
     background-color: darkgray;
     display: flex;
