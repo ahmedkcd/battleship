@@ -8,6 +8,7 @@ rotate button
 start button
 turnInfo = info regarding result of moves 
 turnDisplay = who's turn is it
+username = username from server
 */
 const gbContainer = document.querySelector('#gb-container')
 const shipContainer = document.querySelector('.ship-container')
@@ -15,8 +16,8 @@ const rotateButton = document.querySelector('#rotate-button')
 const startButton = document.querySelector('#start-button')
 const turnInfo = document.querySelector('#info')
 const turnDisplay = document.querySelector('#turn-display')
-
 const username = document.querySelector('#username span');
+//Fetches Users username from server, display it on gamepage
 fetch('/getUsername')
   .then(res => res.text())
   .then(data => username.textContent = data);
@@ -28,14 +29,14 @@ works vice-versa, if ship angle is 90 degrees, flips back to 0
 */
 let angle = 0
 function flip() {
-const optionShips = Array.from(shipContainer.children)
-    if (angle === 0) {
-      angle = 90;
-    } else {
-      angle = 0;
-    }
+  const optionShips = Array.from(shipContainer.children)
+  if (angle === 0) {
+    angle = 90;
+  } else {
+    angle = 0;
+  }
 
-    optionShips.forEach(optionShip => optionShip.style.transform = `rotate(${angle}deg)`)
+  optionShips.forEach(optionShip => optionShip.style.transform = `rotate(${angle}deg)`)
 }
 rotateButton.addEventListener('click', flip)
 
@@ -52,7 +53,7 @@ function createBoard(color, user) {
   gameBoardContainer.style.backgroundColor = color
   gameBoardContainer.id = user
 
-  for(let i = 0; i < width * width; i++) {
+  for (let i = 0; i < width * width; i++) {
     const block = document.createElement('div')
     block.classList.add('block')
     block.id = i
@@ -80,7 +81,8 @@ const battleship = new Ship('battleship', 4)
 const carrier = new Ship('carrier', 5)
 const ships = [destroyer, submarine, cruiser, battleship, carrier]
 
-/*checks the placement of the player ships, whether or not its a valid space
+
+/*checks the placement of the player ships, whether or not its a valid space.
 if horizontal, checks that the ship has enough space to the right of the start index,
 if not, the start index gets moved by the difference of ship length and available space.
 For example: carrier = ship.length 5 , so start index must be width of board - 5, the first available space
@@ -101,57 +103,68 @@ https://jhonny-chamoun.medium.com/battleship-the-game-step1-userinterface-and-ga
 */
 
 function checkShipPlacement(allBoardBlocks, shipOrientation, startIndex, ship) {
-    let validStart;
-    if (shipOrientation) {
-      if (startIndex <= width * width - ship.length) {
-        validStart = startIndex;
-      } else {
-        validStart = width * width - ship.length;
-      }
+  let validStart;
+  /*If the ship is horizontal, the starting index should not exceed maximum index in 
+  row where the ship ends. If ship is vertical, starting index should 
+   not exceed maximum index in the column where the ship ends.*/
+  if (shipOrientation) {
+    if (startIndex <= width * width - ship.length) {
+      validStart = startIndex;
     } else {
-      if (startIndex <= width * width - width * ship.length) {
-        validStart = startIndex;
-      } else {
-        validStart = startIndex - ship.length * width + width;
-      }
+      validStart = width * width - ship.length;
     }
-
-    let shipBlocks = [];
-    for (let i = 0; i < ship.length; i++) {
-      if (shipOrientation) {
-        shipBlocks.push(allBoardBlocks[Number(validStart) + i]);
-      } else {
-        shipBlocks.push(allBoardBlocks[Number(validStart) + i * width]);
-      }
-    }
-
-    let valid;
-    if (shipOrientation) {
-      shipBlocks.every((_shipBlock, index) => {
-        if (shipBlocks[0].id % width !== width - (shipBlocks.length - (index + 1))) {
-          valid = true;
-          return true;
-        } else {
-          valid = false;
-          return false;
-        }
-      });
-      
+  } else {
+    if (startIndex <= width * width - width * ship.length) {
+      validStart = startIndex;
     } else {
-      shipBlocks.every((_shipBlock, index) => {
-        if (shipBlocks[0].id < 90 + (width * index + 1)) {
-          valid = true;
-          return true;
-        } else {
-          valid = false;
-          return false;
-        }
-      });
+      validStart = startIndex - ship.length * width + width;
     }
+  }
 
-    const notTaken = shipBlocks.every(shipBlock => !shipBlock.classList.contains('taken'));
-    return { shipBlocks, valid, notTaken };
+  let shipBlocks = [];
+  for (let i = 0; i < ship.length; i++) {
+    if (shipOrientation) {
+      shipBlocks.push(allBoardBlocks[Number(validStart) + i]);
+    } else {
+      shipBlocks.push(allBoardBlocks[Number(validStart) + i * width]);
+    }
+  }
+
+   /*checks if the ship blocks are valid. If the ship is horizontal, uses every method to check
+   each block for given ship is in the same row. does this by comparing the modulus of the 
+   block's ID with width of board. If modulo != width - (shipBlocks.length - (index + 1)),
+   function sets the valid variable to true and returns true. otherwise false.
+   
+   if ship is vertical, ensures each ship block is in same column.
+   */
+  let valid;
+  if (shipOrientation) {
+    shipBlocks.every((_shipBlock, index) => {
+      if (shipBlocks[0].id % width !== width - (shipBlocks.length - (index + 1))) {
+        valid = true;
+        return true;
+      } else {
+        valid = false;
+        return false;
+      }
+    });
+
+  } else {
+    shipBlocks.every((_shipBlock, index) => {
+      if (shipBlocks[0].id < 90 + (width * index + 1)) {
+        valid = true;
+        return true;
+      } else {
+        valid = false;
+        return false;
+      }
+    });
+  }
+  //checks if all the ship blocks are not taken by looking for taken class
+  const notTaken = shipBlocks.every(shipBlock => !shipBlock.classList.contains('taken'));
+  return { shipBlocks, valid, notTaken };
 }
+
 
 
 /*function to add ship piece to gameboard, does so for both computer and player pieces
@@ -164,35 +177,35 @@ For computer, if placement is NOT valid, recursively calls itself to try a new s
 
 let notDropped
 function addShipPiece(user, ship, startId) {
-    const allBoardBlocks = document.querySelectorAll(`#${user} div`);
-    let randomBoolean = Math.random() < 0.5;
-    let shipOrientation;
+  const allBoardBlocks = document.querySelectorAll(`#${user} div`);
+  let randomBoolean = Math.random() < 0.5;
+  let shipOrientation;
+  if (user === 'player') {
+    shipOrientation = angle === 0;
+  } else {
+    shipOrientation = randomBoolean;
+  }
+  let randomStartIndex = Math.floor(Math.random() * width * width);
+  let startIndex;
+  if (startId) {
+    startIndex = startId;
+  } else {
+    startIndex = randomStartIndex;
+  }
+  const { shipBlocks, valid, notTaken } = checkShipPlacement(allBoardBlocks, shipOrientation, startIndex, ship);
+  if (valid && notTaken) {
+    shipBlocks.forEach(shipBlock => {
+      shipBlock.classList.add(ship.name);
+      shipBlock.classList.add('taken');
+    });
+  } else {
+    if (user === 'computer') {
+      addShipPiece(user, ship, startId);
+    }
     if (user === 'player') {
-      shipOrientation = angle === 0;
-    } else {
-      shipOrientation = randomBoolean;
+      notDropped = true;
     }
-    let randomStartIndex = Math.floor(Math.random() * width * width);
-    let startIndex;
-    if (startId) {
-      startIndex = startId;
-    } else {
-      startIndex = randomStartIndex;
-    }
-    const { shipBlocks, valid, notTaken } = checkShipPlacement(allBoardBlocks, shipOrientation, startIndex, ship);
-    if (valid && notTaken) {
-      shipBlocks.forEach(shipBlock => {
-        shipBlock.classList.add(ship.name);
-        shipBlock.classList.add('taken');
-      });
-    } else {
-      if (user === 'computer') {
-        addShipPiece(user, ship, startId);
-      }
-      if (user === 'player') {
-        notDropped = true;
-      }
-    }
+  }
 }
 ships.forEach(ship => addShipPiece('computer', ship))
 
@@ -210,7 +223,7 @@ allPlayerBlocks.forEach(playerBlock => {
   playerBlock.addEventListener('drop', dropShip)
 })
 
-function dragStart(e){
+function dragStart(e) {
   notDropped = false
   draggedShip = e.target
 }
@@ -233,7 +246,7 @@ function dropShip(e) {
 /* function to Highlight placement of the ship, shows where it will be placed on the board
 Check ship placement function called here to act as visual indicator for valid/invalid spots on gameboard */
 
-function highlightArea( startIndex, ship) {
+function highlightArea(startIndex, ship) {
   const allBoardBlocks = document.querySelectorAll('#player div')
   let shipOrientation = angle === 0
 
@@ -275,9 +288,9 @@ function startGame() {
       turnDisplay.textContent = 'Its Your Turn!'
       turnInfo.textContent = 'The game has started! Make your move!'
     }
-    
+
   }
-  
+
 }
 
 
@@ -361,11 +374,11 @@ function computerGo() {
 }
 
 /*
-Function to "Check Score of game", checks if ships have been sunk, and updates accordingly
-checkShip function uses filter method to check if number of hits on ship = to ship length
-This determines if ship is sunk, pushes ship name to userSunkShips array.
+Function to "Check Status of game", checks if ships have been sunk, and updates accordingly.
+checkShip function uses filter method to check if number of hits on ship == to ship length.
+This determines if ship is sunk, then pushes ship name to userSunkShips array.
 
-Also checks if all ships have been sunk, if shipsSunk = 5, then GAME OVER.
+if all ships have been sunk, AKA if shipsSunk = 5, then GAME OVER.
 Tried to push wins + losses to mongo user collection, but doesn't work at the moment
 */
 
@@ -374,7 +387,7 @@ function checkGameOver(user, userHits, userSunkShips) {
     if (
       userHits.filter(storedShipName => storedShipName === shipName).length === shipLength
     ) {
-      
+
       if (user === 'player') {
         turnInfo.textContent = `you sunk the computer's ${shipName}`
         playerHits = userHits.filter(storedShipName => storedShipName !== shipName)
