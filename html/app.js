@@ -4,14 +4,14 @@ document.querySelector returns the first element that matches
 . used to grab class attribute, # used to grab id attribute
 gb-container = gameboard
 ship-container = Your ships container
-flip button
+rotate button
 start button
 turnInfo = info regarding result of moves 
 turnDisplay = who's turn is it
 */
 const gbContainer = document.querySelector('#gb-container')
 const shipContainer = document.querySelector('.ship-container')
-const flipButton = document.querySelector('#flip-button')
+const rotateButton = document.querySelector('#rotate-button')
 const startButton = document.querySelector('#start-button')
 const turnInfo = document.querySelector('#info')
 const turnDisplay = document.querySelector('#turn-display')
@@ -37,7 +37,7 @@ const optionShips = Array.from(shipContainer.children)
 
     optionShips.forEach(optionShip => optionShip.style.transform = `rotate(${angle}deg)`)
 }
-flipButton.addEventListener('click', flip)
+rotateButton.addEventListener('click', flip)
 
 
 /*create gameboard, each board composed of 100 squares. Each square holds an id of i
@@ -83,16 +83,17 @@ const ships = [destroyer, submarine, cruiser, battleship, carrier]
 /*checks the placement of the player ships, whether or not its a valid space
 if horizontal, checks that the ship has enough space to the right of the start index,
 if not, the start index gets moved by the difference of ship length and available space.
-For example: carrier = ship.length 5 , so start index must be width of board - 5
+For example: carrier = ship.length 5 , so start index must be width of board - 5, the first available space
+would be 5 blocks left of the right side of the gameboard.
 
 if vertical, checks whether ship can fit in space below startIndex, if not moves the start
-index up by the difference of ship length and width of the game board and the available space
+index up by the difference of ship length and width of the game board and the available space.
 
 function also generates array of shipBlocks that correspond with starting index, and the space
-it would occupy based on length
+it would occupy based on length.
 
 ensures that no two ships overlap, and that ships cannot fit outside the gameboard,
-returns object with shipBlocks valid and notTaken
+returns object with shipBlocks valid and notTaken.
 
 function called in add ship piece, and in highlight placement function
 used this as resource to help with game Logic 
@@ -230,7 +231,7 @@ function dropShip(e) {
 }
 
 /* function to Highlight placement of the ship, shows where it will be placed on the board
-Check validity function called here to show visual indicator valid spots */
+Check ship placement function called here to act as visual indicator for valid/invalid spots on gameboard */
 
 function highlightArea( startIndex, ship) {
   const allBoardBlocks = document.querySelectorAll('#player div')
@@ -240,8 +241,8 @@ function highlightArea( startIndex, ship) {
 
   if (valid && notTaken) {
     shipBlocks.forEach(shipBlock => {
-      shipBlock.classList.add('hover')
-      setTimeout(() => shipBlock.classList.remove('hover'), 500)
+      shipBlock.classList.add('highlight')
+      setTimeout(() => shipBlock.classList.remove('highlight'), 500)
     })
   }
 }
@@ -284,7 +285,7 @@ function startGame() {
 /*
 Event handler function for when player Clicks on computer board,
 if clicked block contains 'taken' class, registers successful hit, otherwise registers as empty class
-extracts classes of block, then adds to playerHits array or computerHits array
+extracts classes of block, then adds to playerHits array or computerHits array.
 After click on board, sets players turn to false, making it the computers turn.
 */
 
@@ -318,7 +319,8 @@ Very first thing it checks is if game is over, if NOT then the computer's move b
 setTimeout simulates computer thinking, then the game chooses a random number between 0 and
 100 to decide which space to attack. IF space has hit and taken class = space already hit, -
 -> calls itself to select new space. if space has taken class but NOT hit class = computer hit
-player ship. checkGameOver() keeps tracker of computerHits and computerSunkShips
+player ship. checkGameOver() keeps tracker of computerHits and computerSunkShips.
+setTimeout used to simulate computer "thinking", takes a couple seconds before performing move.
 */
 function computerGo() {
   if (!gameOver) {
@@ -329,15 +331,11 @@ function computerGo() {
       let randomGo = Math.floor(Math.random() * width * width)
       const allBoardBlocks = document.querySelectorAll('#player div')
 
-      if (allBoardBlocks[randomGo].classList.contains('taken') &&
-          allBoardBlocks[randomGo].classList.contains('hit')
-      ) {
+      if (allBoardBlocks[randomGo].classList.contains('taken') && allBoardBlocks[randomGo].classList.contains('hit')) {
         computerGo()
         return
       } else if (
-        allBoardBlocks[randomGo].classList.contains('taken') &&
-        !allBoardBlocks[randomGo].classList.contains('hit')
-      ) {
+        allBoardBlocks[randomGo].classList.contains('taken') && !allBoardBlocks[randomGo].classList.contains('hit')) {
         allBoardBlocks[randomGo].classList.add('hit')
         turnInfo.textContent = 'The Computer hit your ship!'
         let classes = Array.from(allBoardBlocks[randomGo].classList)
@@ -350,7 +348,7 @@ function computerGo() {
         turnInfo.textContent = 'The computer didnt hit anything.'
         allBoardBlocks[randomGo].classList.add('empty')
       }
-    }, 3000)
+    }, 2000)
 
     setTimeout(() => {
       playerTurn = true
@@ -367,7 +365,8 @@ Function to "Check Score of game", checks if ships have been sunk, and updates a
 checkShip function uses filter method to check if number of hits on ship = to ship length
 This determines if ship is sunk, pushes ship name to userSunkShips array.
 
-Also checks if all ships have been sunk, if shipsSunk = 5, then GAME OVER
+Also checks if all ships have been sunk, if shipsSunk = 5, then GAME OVER.
+Tried to push wins + losses to mongo user collection, but doesn't work at the moment
 */
 
 function checkGameOver(user, userHits, userSunkShips) {
@@ -401,13 +400,17 @@ function checkGameOver(user, userHits, userSunkShips) {
     turnInfo.textContent = 'You Sunk all the Computers Ships. YOU WIN'
     gameOver = true
     updateWinLoss(username, 'wins')
+    //Express session maintains user logged into gamepage, thought this code would push the data to MongoDB
   }
   if (computerSunkShips.length === 5) {
     turnInfo.textContent = 'The computer sunk all your ships. YOU LOSE'
     gameOver = true
     updateWinLoss(username, 'losses')
+    //Express session maintains user logged into gamepage, thought this code would push the data to MongoDB
   }
 }
+
+//Attempt to push wins + losses to Mongo User collection
 
 function updateWinLoss(username, winLoss) {
   fetch('/updateWinLoss', {

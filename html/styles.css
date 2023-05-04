@@ -83,7 +83,8 @@ within the ship-container */
     height: 10px;
     margin: 3px;
 }
-
+/*Styling for computer ships, The way we keep the computer ships invisble is by
+keeping background color + ship color the same*/
 #computer .destroyer,
 #computer .submarine,
 #computer .cruiser,
@@ -92,7 +93,8 @@ within the ship-container */
     background-color: aquamarine;
 }
 
-/* These colors override the space color, to register hit or miss */
+/* These colors override the space color, to register hit or miss.
+Set to !important, to override tile color when registering hit/miss. */
 .hit {
     background-color: red !important;
 }
@@ -101,8 +103,6 @@ within the ship-container */
     background-color: grey !important;
 }
 
-.hover {
+.highlight {
     background-color: teal;
 }
-/*Styling for computer ships, The way we keep the computer ships invisble is by
-keeping background color + ship color the same*/
