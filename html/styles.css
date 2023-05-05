@@ -99,7 +99,7 @@ Set to !important, to override tile color when registering hit/miss. */
     background-color: red !important;
 }
 
-.empty {
+.miss {
     background-color: grey !important;
 }
 

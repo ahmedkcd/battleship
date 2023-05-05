@@ -24,11 +24,11 @@ fetch('/getUsername')
 
 
 /*
-function to flip user ships, if angle of ship is equal to 0 degrees, then flip to 90
-works vice-versa, if ship angle is 90 degrees, flips back to 0
+function to rotate user ships, if angle of ship is equal to 0 degrees, then rotate to 90
+works vice-versa, if ship angle is 90 degrees, rotates back to 0
 */
 let angle = 0
-function flip() {
+function rotate() {
   const optionShips = Array.from(shipContainer.children)
   if (angle === 0) {
     angle = 90;
@@ -38,7 +38,7 @@ function flip() {
 
   optionShips.forEach(optionShip => optionShip.style.transform = `rotate(${angle}deg)`)
 }
-rotateButton.addEventListener('click', flip)
+rotateButton.addEventListener('click', rotate)
 
 
 /*create gameboard, each board composed of 100 squares. Each square holds an id of i
@@ -98,8 +98,7 @@ ensures that no two ships overlap, and that ships cannot fit outside the gameboa
 returns object with shipBlocks valid and notTaken.
 
 function called in add ship piece, and in highlight placement function
-used this as resource to help with game Logic 
-https://jhonny-chamoun.medium.com/battleship-the-game-step1-userinterface-and-game-logic-8abba52746cd
+https://codegolf.stackexchange.com/questions/217437/validating-a-battleship-board
 */
 
 function checkShipPlacement(allBoardBlocks, shipOrientation, startIndex, ship) {
@@ -220,7 +219,7 @@ optionShips.forEach(optionShip => optionShip.addEventListener('dragstart', dragS
 const allPlayerBlocks = document.querySelectorAll('#player div')
 allPlayerBlocks.forEach(playerBlock => {
   playerBlock.addEventListener('dragover', dragOver)
-  playerBlock.addEventListener('drop', dropShip)
+  playerBlock.addEventListener('drop', dragEnd)
 })
 
 function dragStart(e) {
@@ -234,7 +233,7 @@ function dragOver(e) {
   highlightArea(e.target.id, ship)
 }
 
-function dropShip(e) {
+function dragEnd(e) {
   const startId = e.target.id
   const ship = ships[draggedShip.id]
   addShipPiece('player', ship, startId)
@@ -262,15 +261,13 @@ function highlightArea(startIndex, ship) {
 
 //THIS SECTION INCLUDES ALL THE GAME LOGIC FUNCTIONS //
 
-let gameOver = false
-let playerTurn
-
 /* start game function, Will only work if all player ships have been placed on board
 Listener waits for player click on startGame button
 */
 
 startButton.addEventListener('click', startGame)
-
+let gameOver = false
+let playerTurn
 let playerHits = []
 let computerHits = []
 const playerSunkShips = []
@@ -297,7 +294,7 @@ function startGame() {
 
 /*
 Event handler function for when player Clicks on computer board,
-if clicked block contains 'taken' class, registers successful hit, otherwise registers as empty class
+if clicked block contains 'taken' class, registers successful hit, otherwise registers as miss class
 extracts classes of block, then adds to playerHits array or computerHits array.
 After click on board, sets players turn to false, making it the computers turn.
 */
@@ -318,7 +315,7 @@ function handlePlayerClick(e) {
     }
     if (!e.target.classList.contains('taken')) {
       turnInfo.textContent = 'You hit Nothing this time X .'
-      e.target.classList.add('empty')
+      e.target.classList.add('miss')
     }
     playerTurn = false
     const allBoardBlocks = document.querySelectorAll('#computer div')
@@ -359,7 +356,7 @@ function computerGo() {
         checkGameOver('computer', computerHits, computerSunkShips)
       } else {
         turnInfo.textContent = 'The computer didnt hit anything.'
-        allBoardBlocks[randomGo].classList.add('empty')
+        allBoardBlocks[randomGo].classList.add('miss')
       }
     }, 2000)
 
