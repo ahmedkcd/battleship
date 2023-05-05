@@ -103,6 +103,8 @@ returns object with shipBlocks valid and notTaken.
 function makes it so a ship can't be split between two rows or split between two columns.
 
 function called in add ship piece, and in highlight placement function
+Helpful resources we used V
+https://github.com/kubowania/battleships
 https://stackoverflow.com/questions/65619113/validating-a-battleship-board-2d-array-how-to-check-possibilities-for-boards-v
 */
 
