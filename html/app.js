@@ -1,4 +1,5 @@
 //APW Javascript Section 4 Anthony Pfau, Ahmed Kaced, Christopher Martinez, Christian Betia
+
 /*
 document.querySelector returns the first element that matches
 . used to grab class attribute, # used to grab id attribute
@@ -10,6 +11,7 @@ turnInfo = info regarding result of moves
 turnDisplay = who's turn is it
 username = username from server
 */
+
 const gbContainer = document.querySelector('#gb-container')
 const shipContainer = document.querySelector('.ship-container')
 const rotateButton = document.querySelector('#rotate-button')
@@ -17,6 +19,7 @@ const startButton = document.querySelector('#start-button')
 const turnInfo = document.querySelector('#info')
 const turnDisplay = document.querySelector('#turn-display')
 const username = document.querySelector('#username span');
+
 //Fetches Users username from server, display it on gamepage
 fetch('/getUsername')
   .then(res => res.text())
@@ -27,6 +30,7 @@ fetch('/getUsername')
 function to rotate user ships, if angle of ship is equal to 0 degrees, then rotate to 90
 works vice-versa, if ship angle is 90 degrees, rotates back to 0
 */
+
 let angle = 0
 function rotate() {
   const shipOption = Array.from(shipContainer.children)
@@ -45,12 +49,12 @@ rotateButton.addEventListener('click', rotate)
 block id is used later to determine if block is taken by ship, helps to register
 hits or misses which then get added to an array
 */
+
 const width = 10
 
-function createBoard(color, user) {
+function createBoard(user) {
   const gameBoardContainer = document.createElement('div')
   gameBoardContainer.classList.add('game-board')
-  gameBoardContainer.style.backgroundColor = color
   gameBoardContainer.id = user
 
   for (let i = 0; i < width * width; i++) {
@@ -62,9 +66,8 @@ function createBoard(color, user) {
 
   gbContainer.append(gameBoardContainer)
 }
-//giving color to the boards through javascript. Computer board color must always remain SAME color as computer ship pieces
-createBoard('aquamarine', 'player')
-createBoard('aquamarine', 'computer')
+createBoard('player')
+createBoard('computer')
 
 //class def for creating ship objects
 class Ship {
@@ -334,6 +337,7 @@ setTimeout simulates computer thinking, then the game chooses a random number be
 player ship. checkGameOver() keeps tracker of computerHits and computerSunkShips.
 setTimeout used to simulate computer "thinking", takes a couple seconds before performing move.
 */
+
 function computerTurn() {
   if (!gameOver) {
     turnDisplay.textContent = 'Computers Turn!'
