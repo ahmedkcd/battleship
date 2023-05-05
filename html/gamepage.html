@@ -1,3 +1,4 @@
+<!--APW Javascript Section 4 Anthony Pfau, Ahmed Kaced, Christopher Martinez, Christian Betia -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,9 +9,11 @@
 
 <body>
     <div id="username">Welcome to Battleship, <span></span></div>
+    <!-- Calls username from mongo users collection, displays username in welcome message -->
 
     <h4> Your Ships</h4>
     <div class="ship-container">
+       <!-- HTML5 elements can be draggable by adding the draggable property -->
         <div id="0" class="destroyer-preview destroyer" draggable="true"></div>
         <div id="1" class="submarine-preview submarine" draggable="true"></div>
         <div id="2" class="cruiser-preview cruiser" draggable="true"></div>
@@ -18,14 +21,14 @@
         <div id="4" class="carrier-preview carrier" draggable="true"></div>
     </div>
 
-    <button id="flip-button">Flip ships</button>
+    <button id="rotate-button">ROTATE</button>
     <button id="start-button">Start Game</button>
     <hr>
     <div id="gb-container"></div>
     <hr>
     <div id="game-info">
-        <p>Who's Turn: <span id="turn-display"></span></p>
-        <p>:<span id="info"></span></p>
+        <h5>Who's Turn: <span id="turn-display"></span></h5>
+        <h6><span id="info"></span></h6>
     </div>
     
     <script src="app.js"></script>

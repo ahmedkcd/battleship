@@ -1,4 +1,4 @@
-
+/* APW Javascript Section 4 Anthony Pfau, Ahmed Kaced, Christopher Martinez, Christian Betia */
 #gb-container {
     width: 500px;
     display: flex;
@@ -13,7 +13,7 @@
     border: 1px solid black;
     
 }
-/* The blocks that make up the gameboard*/
+/* The blocks that make up the gameboard, would have to manually size up the squares along with board size to keep ratio*/
 .block {
     width: 20px;
     height: 20px;
@@ -21,8 +21,8 @@
 }
 /* Option container, this is where all the player ships are stored*/
 .ship-container {
-    width: 400px;
-    height: 60px;
+    width: 300px;
+    height: 80px;
     margin: 20px 0;
     background-color: darkgray;
     display: flex;
@@ -38,26 +38,14 @@ within the ship-container */
     background-color: orange;
 }
 
-.submarine {
-    background-color:mediumpurple;
-}
-
-.cruiser {
-    background-color:black;
-}
-
-.battleship {
-    background-color:magenta;
-}
-
-.carrier {
-    background-color: indigo;
-}
-
 .destroyer-preview {
     width: 20px;
     height: 10px;
     margin: 3px;
+}
+
+.submarine {
+    background-color:mediumpurple;
 }
 
 .submarine-preview {
@@ -66,10 +54,18 @@ within the ship-container */
     margin: 3px;
 }
 
+.cruiser {
+    background-color:black;
+}
+
 .cruiser-preview {
     width: 30px;
     height: 10px;
     margin: 3px;
+}
+
+.battleship {
+    background-color:magenta;
 }
 
 .battleship-preview {
@@ -78,14 +74,14 @@ within the ship-container */
     margin: 3px;
 }
 
+.carrier {
+    background-color: indigo;
+}
+
 .carrier-preview {
     width: 50px;
     height: 10px;
     margin: 3px;
-}
-
-.hover {
-    background-color: teal;
 }
 /*Styling for computer ships, The way we keep the computer ships invisble is by
 keeping background color + ship color the same*/
@@ -97,11 +93,16 @@ keeping background color + ship color the same*/
     background-color: aquamarine;
 }
 
-/* These colors override the space color, to register hit or miss */
+/* These colors override the space color, to register hit or miss.
+Set to !important, to override tile color when registering hit/miss. */
 .hit {
     background-color: red !important;
 }
 
-.empty {
+.miss {
     background-color: grey !important;
+}
+
+.highlight {
+    background-color: teal;
 }
