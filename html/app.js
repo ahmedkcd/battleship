@@ -29,14 +29,14 @@ works vice-versa, if ship angle is 90 degrees, rotates back to 0
 */
 let angle = 0
 function rotate() {
-  const optionShips = Array.from(shipContainer.children)
+  const shipOption = Array.from(shipContainer.children)
   if (angle === 0) {
     angle = 90;
   } else {
     angle = 0;
   }
 
-  optionShips.forEach(optionShip => optionShip.style.transform = `rotate(${angle}deg)`)
+  shipOption.forEach(optionShip => optionShip.style.transform = `rotate(${angle}deg)`)
 }
 rotateButton.addEventListener('click', rotate)
 
@@ -97,8 +97,10 @@ it would occupy based on length.
 ensures that no two ships overlap, and that ships cannot fit outside the gameboard,
 returns object with shipBlocks valid and notTaken.
 
+function makes it so a ship can't be split between two rows or split between two columns.
+
 function called in add ship piece, and in highlight placement function
-https://codegolf.stackexchange.com/questions/217437/validating-a-battleship-board
+https://stackoverflow.com/questions/65619113/validating-a-battleship-board-2d-array-how-to-check-possibilities-for-boards-v
 */
 
 function checkShipPlacement(allBoardBlocks, shipOrientation, startIndex, ship) {
@@ -213,8 +215,8 @@ ships.forEach(ship => addShipPiece('computer', ship))
 //https://www.javascripttutorial.net/web-apis/javascript-drag-and-drop/
 
 let draggedShip
-const optionShips = Array.from(shipContainer.children)
-optionShips.forEach(optionShip => optionShip.addEventListener('dragstart', dragStart))
+const shipOption = Array.from(shipContainer.children)
+shipOption.forEach(shipOption => shipOption.addEventListener('dragstart', dragStart))
 
 const allPlayerBlocks = document.querySelectorAll('#player div')
 allPlayerBlocks.forEach(playerBlock => {
