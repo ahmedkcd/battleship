@@ -282,7 +282,7 @@ function startGame() {
       turnInfo.textContent = 'Please place all your ships first!'
     } else {
       const allBoardBlocks = document.querySelectorAll('#computer div')
-      allBoardBlocks.forEach(block => block.addEventListener('click', handlePlayerClick))
+      allBoardBlocks.forEach(block => block.addEventListener('click', playerClick))
       playerTurn = true
       turnDisplay.textContent = 'Its Your Turn!'
       turnInfo.textContent = 'The game has started! Make your move!'
@@ -301,7 +301,7 @@ extracts classes of block, then adds to playerHits array or computerHits array.
 After click on board, sets players turn to false, making it the computers turn.
 */
 
-function handlePlayerClick(e) {
+function playerClick(e) {
 
   if (!gameOver) {
     if (e.target.classList.contains('taken')) {
@@ -322,7 +322,7 @@ function handlePlayerClick(e) {
     playerTurn = false
     const allBoardBlocks = document.querySelectorAll('#computer div')
     allBoardBlocks.forEach(block => block.replaceWith(block.cloneNode(true)))
-    setTimeout(computerGo, 3000)
+    setTimeout(computerTurn, 3000)
   }
 }
 
@@ -334,7 +334,7 @@ setTimeout simulates computer thinking, then the game chooses a random number be
 player ship. checkGameOver() keeps tracker of computerHits and computerSunkShips.
 setTimeout used to simulate computer "thinking", takes a couple seconds before performing move.
 */
-function computerGo() {
+function computerTurn() {
   if (!gameOver) {
     turnDisplay.textContent = 'Computers Turn!'
     turnInfo.textContent = 'The computer is thinking...'
@@ -344,7 +344,7 @@ function computerGo() {
       const allBoardBlocks = document.querySelectorAll('#player div')
 
       if (allBoardBlocks[randomGo].classList.contains('taken') && allBoardBlocks[randomGo].classList.contains('hit')) {
-        computerGo()
+        computerTurn()
         return
       } else if (
         allBoardBlocks[randomGo].classList.contains('taken') && !allBoardBlocks[randomGo].classList.contains('hit')) {
@@ -367,7 +367,7 @@ function computerGo() {
       turnDisplay.textContent = 'Your Turn!'
       turnInfo.textContent = 'Please take your turn.'
       const allBoardBlocks = document.querySelectorAll('#computer div')
-      allBoardBlocks.forEach(block => block.addEventListener('click', handlePlayerClick))
+      allBoardBlocks.forEach(block => block.addEventListener('click', playerClick))
     }, 6000)
   }
 }
@@ -405,8 +405,6 @@ function checkGameOver(user, userHits, userSunkShips) {
   checkShip('battleship', 4)
   checkShip('carrier', 5)
 
-  console.log('playerHits', playerHits)
-  console.log('playerSunkShips', playerSunkShips)
 
   if (playerSunkShips.length === 5) {
     turnInfo.textContent = 'You Sunk all the Computers Ships. YOU WIN'
