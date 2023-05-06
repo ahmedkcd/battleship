@@ -1,4 +1,5 @@
 //APW Javascript Section 4 Anthony Pfau, Ahmed Kaced, Christopher Martinez, Christian Betia
+
 /*
 document.querySelector returns the first element that matches
 . used to grab class attribute, # used to grab id attribute
@@ -19,6 +20,7 @@ const startButton = document.querySelector('#start-button')
 const turnInfo = document.querySelector('#info')
 const turnDisplay = document.querySelector('#turn-display')
 const username = document.querySelector('#username span');
+
 //Fetches Users username from server, display it on gamepage
 fetch('/getUsername')
   .then(res => res.text())
@@ -29,16 +31,17 @@ fetch('/getUsername')
 function to rotate user ships, if angle of ship is equal to 0 degrees, then rotate to 90
 works vice-versa, if ship angle is 90 degrees, rotates back to 0
 */
+
 let angle = 0
 function rotate() {
-  const optionShips = Array.from(shipContainer.children)
+  const shipOption = Array.from(shipContainer.children)
   if (angle === 0) {
     angle = 90;
   } else {
     angle = 0;
   }
 
-  optionShips.forEach(optionShip => optionShip.style.transform = `rotate(${angle}deg)`)
+  shipOption.forEach(optionShip => optionShip.style.transform = `rotate(${angle}deg)`)
 }
 rotateButton.addEventListener('click', rotate)
 
@@ -47,12 +50,12 @@ rotateButton.addEventListener('click', rotate)
 block id is used later to determine if block is taken by ship, helps to register
 hits or misses which then get added to an array
 */
+
 const width = 10
 
-function createBoard(color, user) {
+function createBoard(user) {
   const gameBoardContainer = document.createElement('div')
   gameBoardContainer.classList.add('game-board')
-  gameBoardContainer.style.backgroundColor = color
   gameBoardContainer.id = user
 
   for (let i = 0; i < width * width; i++) {
@@ -64,9 +67,8 @@ function createBoard(color, user) {
 
   gbContainer.append(gameBoardContainer)
 }
-//giving color to the boards through javascript. Computer board color must always remain SAME color as computer ship pieces
-createBoard('aquamarine', 'player')
-createBoard('aquamarine', 'computer')
+createBoard('player')
+createBoard('computer')
 
 //class def for creating ship objects
 class Ship {
@@ -99,8 +101,10 @@ it would occupy based on length.
 ensures that no two ships overlap, and that ships cannot fit outside the gameboard,
 returns object with shipBlocks valid and notTaken.
 
+function makes it so a ship can't be split between two rows or split between two columns.
+
 function called in add ship piece, and in highlight placement function
-https://codegolf.stackexchange.com/questions/217437/validating-a-battleship-board
+https://stackoverflow.com/questions/65619113/validating-a-battleship-board-2d-array-how-to-check-possibilities-for-boards-v
 */
 
 function checkShipPlacement(allBoardBlocks, shipOrientation, startIndex, ship) {
@@ -215,8 +219,8 @@ ships.forEach(ship => addShipPiece('computer', ship))
 //https://www.javascripttutorial.net/web-apis/javascript-drag-and-drop/
 
 let draggedShip
-const optionShips = Array.from(shipContainer.children)
-optionShips.forEach(optionShip => optionShip.addEventListener('dragstart', dragStart))
+const shipOption = Array.from(shipContainer.children)
+shipOption.forEach(shipOption => shipOption.addEventListener('dragstart', dragStart))
 
 const allPlayerBlocks = document.querySelectorAll('#player div')
 allPlayerBlocks.forEach(playerBlock => {
@@ -282,7 +286,7 @@ function startGame() {
       turnInfo.textContent = 'Please place all your ships first!'
     } else {
       const allBoardBlocks = document.querySelectorAll('#computer div')
-      allBoardBlocks.forEach(block => block.addEventListener('click', handlePlayerClick))
+      allBoardBlocks.forEach(block => block.addEventListener('click', playerClick))
       playerTurn = true
       turnDisplay.textContent = 'Its Your Turn!'
       turnInfo.textContent = 'The game has started! Make your move!'
@@ -301,7 +305,7 @@ extracts classes of block, then adds to playerHits array or computerHits array.
 After click on board, sets players turn to false, making it the computers turn.
 */
 
-function handlePlayerClick(e) {
+function playerClick(e) {
 
   if (!gameOver) {
     if (e.target.classList.contains('taken')) {
@@ -322,7 +326,7 @@ function handlePlayerClick(e) {
     playerTurn = false
     const allBoardBlocks = document.querySelectorAll('#computer div')
     allBoardBlocks.forEach(block => block.replaceWith(block.cloneNode(true)))
-    setTimeout(computerGo, 3000)
+    setTimeout(computerTurn, 3000)
   }
 }
 
@@ -334,7 +338,8 @@ setTimeout simulates computer thinking, then the game chooses a random number be
 player ship. checkGameOver() keeps tracker of computerHits and computerSunkShips.
 setTimeout used to simulate computer "thinking", takes a couple seconds before performing move.
 */
-function computerGo() {
+
+function computerTurn() {
   if (!gameOver) {
     turnDisplay.textContent = 'Computers Turn!'
     turnInfo.textContent = 'The computer is thinking...'
@@ -344,7 +349,7 @@ function computerGo() {
       const allBoardBlocks = document.querySelectorAll('#player div')
 
       if (allBoardBlocks[randomGo].classList.contains('taken') && allBoardBlocks[randomGo].classList.contains('hit')) {
-        computerGo()
+        computerTurn()
         return
       } else if (
         allBoardBlocks[randomGo].classList.contains('taken') && !allBoardBlocks[randomGo].classList.contains('hit')) {
@@ -367,7 +372,7 @@ function computerGo() {
       turnDisplay.textContent = 'Your Turn!'
       turnInfo.textContent = 'Please take your turn.'
       const allBoardBlocks = document.querySelectorAll('#computer div')
-      allBoardBlocks.forEach(block => block.addEventListener('click', handlePlayerClick))
+      allBoardBlocks.forEach(block => block.addEventListener('click', playerClick))
     }, 6000)
   }
 }
@@ -405,8 +410,6 @@ function checkGameOver(user, userHits, userSunkShips) {
   checkShip('battleship', 4)
   checkShip('carrier', 5)
 
-  console.log('playerHits', playerHits)
-  console.log('playerSunkShips', playerSunkShips)
 
   if (playerSunkShips.length === 5) {
     turnInfo.textContent = 'You Sunk all the Computers Ships. YOU WIN'
