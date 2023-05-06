@@ -10,6 +10,8 @@ turnInfo = info regarding result of moves
 turnDisplay = who's turn is it
 username = username from server
 */
+
+//code adapted from https://github.com/kubowania/battleships
 const gbContainer = document.querySelector('#gb-container')
 const shipContainer = document.querySelector('.ship-container')
 const rotateButton = document.querySelector('#rotate-button')
